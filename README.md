@@ -13,7 +13,14 @@ types" problem in finance data engineering.
 
 Every answer is grounded in retrieved evidence and cites its sources —
 `[doc_id#chunk]` for document chunks, `[db:table]` for SQL results — with the
-agent's full tool-call trace inspectable per answer:
+agent's full tool-call trace inspectable per answer.
+
+Multi-step reasoning across sources: to verify a contract commitment against
+actual spend, the agent searches the contract, runs a SQL aggregation against
+the structured ledger, and consults the knowledge graph — every call visible
+in the trace:
+
+![Reasoning trace: contract search + query_financials SQL cross-check on the Helios commitment question](docs/screenshots/reasoning-trace-sql.png)
 
 ![Chat overview: cited answers across the tax report and supplier contract](docs/screenshots/chat-overview.png)
 
