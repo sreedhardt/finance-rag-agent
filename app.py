@@ -26,6 +26,12 @@ def get_runtime():
     return index, agent
 
 
+def md(text: str) -> str:
+    """Escape $ so st.markdown doesn't treat dollar amounts as LaTeX math
+    delimiters ($1,220 ... $1,200 would otherwise render as a garbled formula)."""
+    return text.replace("$", r"\$")
+
+
 def render_steps(steps):
     if not steps:
         return
@@ -73,7 +79,7 @@ if "messages" not in st.session_state:
 
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
+        st.markdown(md(msg["content"]))
         if msg.get("steps"):
             render_steps(msg["steps"])
 
@@ -84,11 +90,11 @@ if not question and "pending_question" in st.session_state:
 if question:
     st.session_state.messages.append({"role": "user", "content": question})
     with st.chat_message("user"):
-        st.markdown(question)
+        st.markdown(md(question))
     with st.chat_message("assistant"):
         with st.spinner("Investigating..."):
             result = agent.ask(question)
-        st.markdown(result.answer)
+        st.markdown(md(result.answer))
         render_steps(result.steps)
     st.session_state.messages.append(
         {"role": "assistant", "content": result.answer, "steps": result.steps}
