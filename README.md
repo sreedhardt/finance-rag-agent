@@ -9,6 +9,16 @@ Built as a working reference for the "ingest unstructured documents → help
 humans and AI agents search and perform multi-step reasoning across document
 types" problem in finance data engineering.
 
+## Screenshots
+
+Every answer is grounded in retrieved evidence and cites its sources —
+`[doc_id#chunk]` for document chunks, `[db:table]` for SQL results — with the
+agent's full tool-call trace inspectable per answer:
+
+![Chat overview: cited answers across the tax report and supplier contract](docs/screenshots/chat-overview.png)
+
+![Effective tax rate answer with per-claim chunk citations](docs/screenshots/tax-rate-citations.png)
+
 ## Architecture
 
 ```
