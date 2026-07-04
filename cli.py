@@ -21,7 +21,7 @@ def main() -> None:
         run_ingestion()
         return
 
-    from finance_rag.agent import FinanceAgent
+    from finance_rag.agent import create_agent
     from finance_rag.embedder import GeminiEmbedder
     from finance_rag.graph import KnowledgeGraph
     from finance_rag.indexer import VectorIndex
@@ -30,7 +30,7 @@ def main() -> None:
     index = VectorIndex(GeminiEmbedder())
     if index.count() == 0:
         sys.exit("Index is empty — run `python cli.py ingest` first.")
-    agent = FinanceAgent(AgentTools(index, KnowledgeGraph.load()))
+    agent = create_agent(AgentTools(index, KnowledgeGraph.load()))
     result = agent.ask(args.question)
 
     if args.show_steps:

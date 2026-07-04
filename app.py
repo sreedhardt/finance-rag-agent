@@ -15,14 +15,14 @@ SAMPLE_QUESTIONS = [
 
 @st.cache_resource
 def get_runtime():
-    from finance_rag.agent import FinanceAgent
+    from finance_rag.agent import create_agent
     from finance_rag.embedder import GeminiEmbedder
     from finance_rag.graph import KnowledgeGraph
     from finance_rag.indexer import VectorIndex
     from finance_rag.tools import AgentTools
 
     index = VectorIndex(GeminiEmbedder())
-    agent = FinanceAgent(AgentTools(index, KnowledgeGraph.load()))
+    agent = create_agent(AgentTools(index, KnowledgeGraph.load()))
     return index, agent
 
 
@@ -44,6 +44,9 @@ st.caption(
 index, agent = get_runtime()
 
 with st.sidebar:
+    from finance_rag import config
+    active_model = config.GROQ_MODEL if config.LLM_PROVIDER == "groq" else config.GEMINI_MODEL
+    st.caption(f"LLM: **{config.LLM_PROVIDER}** / `{active_model}`")
     st.header("Corpus")
     if st.button("Rebuild index (ingest pipeline)"):
         from finance_rag.pipeline import run_ingestion

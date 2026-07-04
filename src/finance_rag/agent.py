@@ -96,3 +96,15 @@ class FinanceAgent:
                    f"({config.MAX_AGENT_TURNS}) without a final answer.",
             steps=steps,
         )
+
+
+def create_agent(tools: AgentTools):
+    """Provider factory: LLM_PROVIDER=gemini (default) or groq. Both agents
+    expose the same ask() -> AgentResult interface over the same tool surface."""
+    if config.LLM_PROVIDER == "groq":
+        from .groq_agent import GroqFinanceAgent
+        return GroqFinanceAgent(tools)
+    if config.LLM_PROVIDER != "gemini":
+        raise ValueError(f"unknown LLM_PROVIDER: {config.LLM_PROVIDER!r} "
+                         "(expected 'gemini' or 'groq')")
+    return FinanceAgent(tools)

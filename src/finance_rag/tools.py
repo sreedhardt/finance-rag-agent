@@ -77,6 +77,36 @@ TOOL_DECLARATIONS = [
 ]
 
 
+def _schema_to_json(schema: types.Schema) -> dict:
+    """Convert a Gemini types.Schema to plain JSON Schema (OpenAI tool format)."""
+    out: dict = {}
+    if schema.type is not None:
+        out["type"] = schema.type.name.lower()
+    if schema.description:
+        out["description"] = schema.description
+    if schema.properties:
+        out["properties"] = {k: _schema_to_json(v) for k, v in schema.properties.items()}
+    if schema.required:
+        out["required"] = list(schema.required)
+    return out
+
+
+def openai_tool_declarations() -> list[dict]:
+    """The same tool surface in OpenAI/Groq chat-completions format, derived
+    from TOOL_DECLARATIONS so the two providers can never drift apart."""
+    return [
+        {
+            "type": "function",
+            "function": {
+                "name": decl.name,
+                "description": decl.description,
+                "parameters": _schema_to_json(decl.parameters),
+            },
+        }
+        for decl in TOOL_DECLARATIONS
+    ]
+
+
 class AgentTools:
     """Binds tool names to implementations over the live index/graph/db."""
 

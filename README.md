@@ -34,7 +34,7 @@ data/raw/*.md|pdf
       │  each stage is a plain function → Airflow task (orchestration/)
       ▼
 ┌────────────────────────── Agent loop (agent.py) ───────────────────────────────┐
-│ Gemini function calling, hand-written loop (observable, gateable):             │
+│ Gemini or Groq function calling, hand-written loop (observable, gateable):     │
 │   search_documents  · get_document  · graph_lookup  · query_financials (RO)    │
 │ Answers cite [doc_id#chunk] and [db:table]; refuses to answer from memory.     │
 └─────────────────────────────────────────────────────────────────────────────────┘
@@ -60,6 +60,22 @@ uv run python cli.py ask "What payment terms did we agree to with Helios?" --sho
 uv run streamlit run app.py     # chat UI at localhost:8501
 uv run pytest                   # offline test suite (no API key needed)
 ```
+
+### Switching LLM providers
+
+The agent runs on **Gemini** (default) or **Groq** — set in `.env`:
+
+```bash
+LLM_PROVIDER=groq          # gemini | groq
+GROQ_API_KEY=...           # console.groq.com/keys
+# GROQ_MODEL=llama-3.3-70b-versatile
+```
+
+Both providers share one tool surface: declarations are defined once (Gemini
+format) and converted to OpenAI/Groq format, so they can't drift apart.
+Embeddings always use `gemini-embedding-001` — Groq has no embeddings API —
+and Gemini quotas are per-model, so embedding continues to work even when a
+chat model's quota is exhausted.
 
 Docker:
 
